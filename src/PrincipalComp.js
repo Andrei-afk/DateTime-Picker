@@ -40,6 +40,8 @@ const PrincipalComp = () => {
     const [textSetMonth, setTextSetMonth] = useState('Numar luni');
     const [textSetYear, setTextSetYear] = useState('Numar ani');
     const [textInstructions, setTextInstructions] = useState('Numerele introduse trebuie sa fie naturale');
+    const [textBGetAge, setTextBGetAge] = useState('Varsta ta');
+    const [textBGetSecDate, setTextBGetSecDate] = useState ('Obtine a doua data');
     const [errorNotNumberRo, setErrorNotnumberRo] = useState(null);
     const [errorNotPositiveRo, setErrorNotPositiveRo] = useState(null);
     const [errorNotNaturalRo, setErrorNotNaturalRo]=useState(null);
@@ -108,7 +110,8 @@ const PrincipalComp = () => {
            setTextSetMonth("Number of months");
            setTextSetYear("Number of years");
            setTextInstructions("The numbers entered must be natural");
-           
+           setTextBGetSecDate("Get second date");
+           setTextBGetAge("Get age");
            setLocale ('en');
 
         }
@@ -130,6 +133,8 @@ const PrincipalComp = () => {
             setTextSetDay("Numar zile");
             setTextSetMonth("Numar luni");
             setTextSetYear("Numar ani");
+            setTextBGetSecDate("Obtine a doua data");
+           setTextBGetAge("Varsta ta");
             setTextInstructions("Numerele introduse trebuie sa fie naturale");
 
             setLocale  ('ro');
@@ -387,7 +392,7 @@ const PrincipalComp = () => {
                             {
                                 (new Date()).getTime() > dateFromDP1.getTime() && 
                                     <div>
-                                        <Button label="Varsta" onClick = { () => {getPersAge()} } />
+                                        <Button label={textBGetAge} onClick = { () => {getPersAge()} } />
                                         {yearDif >0 && monthDif >0 && <p> {textAge} {yearDif} {textYear} {monthDif} {textMonth}</p>}
                                         {yearDif ===0 && monthDif >0 && <p> {textAge} {monthDif} {textMonth}</p>}
                                         {yearDif >0 && monthDif ===0 && <p> {textAge} {yearDif} {textYear} </p>}
@@ -425,7 +430,7 @@ const PrincipalComp = () => {
                             <InputText onChange={event => setSDay(event.target.value)} placeholder={textSetDay}/>
                             <InputText onChange={event => setSMonth(event.target.value)} placeholder={textSetMonth}/>
                             <InputText onChange={event => setSYear(event.target.value)} placeholder={textSetYear}/>
-                            <Button label="Obtine a doua data: " onClick={ () => {getSecondDate() }} />
+                            <Button label={textBGetSecDate} onClick={ () => {getSecondDate() }} />
                             
                             <br></br>
                             <small> {textInstructions}</small>
