@@ -12,6 +12,7 @@ import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { getDefaultNormalizer } from '@testing-library/dom';
 
 
 const PrincipalComp = () => {
@@ -23,23 +24,27 @@ const PrincipalComp = () => {
     const [chooseD2, setChooseD2] = useState('Alege a doua data');
     const [bTextSL, setBTextSL] = useState('Schimba in engleza');
     const [bTextCA, setBTextCA] = useState('Persoana este majora sau minora?');
+    const [bTextGetDiff, setBTextGetDiff] = useState('Diferenta dintre cele doua date este ');
     const [locale, setLocale] = useState('ro')
     const [timestamp, setTimestamp] = useState(null);
     const [majorPerson, setMajorPerson] = useState(null);
     const [persMajora, setPersMajora] = useState(null);
-    const [dayDif, setDayDif] = useState('Diferenta in zile dintre cele doua date este: ');
-    const [hourDif, setHourDif] = useState('Diferenta dintre cele doua date in ore este: ');
+    
     const [textAge, setTextAge] = useState('Varsta ta este: ');
     const [textYear, setTextYear] = useState(' ani ');
-    const [textMonth, setTextMonth] = useState(' luni.');
-    const [textM0Y0, setTextM0Y0] = useState('Esti nascut luna aceasta');
+    const [textMonth, setTextMonth] = useState(' luni ');
+    const [textDay, setTextDay] = useState(' zile ');
+    const [textHour, setTextHour] = useState(' ore ');
+    const [textMin, setTextMin] = useState(' minute ');
+    const [textSec, setTextSec] = useState(' secunde.');
+
     const [textSetSec, setTextSetSec] = useState('Numar secunde');
     const [textSetMin, setTextSetMin] = useState('Numar minute');
     const [textSetHour, setTextSetHour] = useState('Numar ore');
     const [textSetDay, setTextSetDay] = useState('Numar zile');
     const [textSetMonth, setTextSetMonth] = useState('Numar luni');
     const [textSetYear, setTextSetYear] = useState('Numar ani');
-    const [textInstructions, setTextInstructions] = useState('Numerele introduse trebuie sa fie naturale');
+    const [textInstructions, setTextInstructions] = useState('Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0');
     const [textBGetAge, setTextBGetAge] = useState('Varsta ta');
     const [textBGetSecDate, setTextBGetSecDate] = useState ('Obtine a doua data');
     const [errorNotNumberRo, setErrorNotnumberRo] = useState(null);
@@ -48,6 +53,7 @@ const PrincipalComp = () => {
     const [errorNotNumberEn, setErrorNotnumberEn] = useState(null);
     const [errorNotPositiveEn, setErrorNotPositiveEn] = useState(null);
     const [errorNotNaturalEnn, setErrorNotNaturalEn]=useState(null);
+    const [textDateEq, setTextDateEq] = useState('Cele doua date sunt egale');
 
     const [sSec, setSSec] = useState(0);
     const [sMin, setSMin] = useState(0);
@@ -56,14 +62,28 @@ const PrincipalComp = () => {
     const [sMonth, setSMonth] = useState(0);
     const [sYear, setSYear] = useState(0);
 
+    const [diffSec, setDiffSec] = useState(0);
+    const [diffMin, setDiffMin] = useState(0);
+    const [diffHour, setDiffHour] = useState(0);
+    const [diffDay, setDiffDay] = useState(0);
+    const [diffMonth, setDiffMonth] = useState(0);
+    const [diffYear, setDiffYear] = useState(0);
+
+    const [ageSec, setAgeSec] = useState(0);
+    const [ageMin, setAgeMin] = useState(0);
+    const [ageHour, setAgeHour] = useState(0);
+    const [ageDay, setAgeDay] = useState(0);
+    const [ageMonth, setAgeMonth] = useState(0);
+    const [ageYear, setAgeYear] = useState(0);
 
 
-    const [yearDif, setYearDif] = useState(0);
-    const [monthDif, setMonthDif] = useState(0);
+
 
     var luni = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
     var months = ['januray', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'octomber', 'november', 'december'];
     var compareDateVariable ;
+    var bGetDiffPress = 0;
+    var bGetAge = 0;
 
     addLocale('ro', {
         firstDayOfWeek: 1,
@@ -94,22 +114,25 @@ const PrincipalComp = () => {
         if (locale === 'ro')
         {
            setBTextSL("change to Romanian");
+           setTextDateEq("These two dates are qual");
            setBTextCA("Is the person major or minor?")
-           setDayDif("The difference between these 2 dates in days is: ");
-           setHourDif("The differece between these 2 dates in hours is: ");
+           setBTextGetDiff("The differece between these two dates is:")
            setChooseD1("Choose first date");
            setChooseD2("Choose second date");
            setTextAge("You are: ");
            setTextYear(" years ");
-           setTextMonth(" months.");
-           setTextM0Y0("You are born this month");
+           setTextMonth(" months ");
+           setTextDay(" days ");
+           setTextHour(" hours ");
+           setTextMin(" minutes ");
+           setTextSec(" seconds. ");
            setTextSetSec("Number of seconds");
            setTextSetMin("Number of minutes");
            setTextSetHour("Number of hours");
            setTextSetDay("Number of days");
            setTextSetMonth("Number of months");
            setTextSetYear("Number of years");
-           setTextInstructions("The numbers entered must be natural");
+           setTextInstructions("The numbers entered must be natural. If u don`t insert any values, the used values are 0.");
            setTextBGetSecDate("Get second date");
            setTextBGetAge("Get age");
            setLocale ('en');
@@ -117,16 +140,21 @@ const PrincipalComp = () => {
         }
         else
         {
+            setTextDateEq("Cele doua date sunt egale");
             setBTextSL("schimb in Engleza");
             setBTextCA("Persoana este minora sau majora?");
-            setDayDif("Diferenta in zile dintre cele doua date este: ");
-            setHourDif("Diferenta in ore dintre cele doua date este: ");
+            setBTextGetDiff("Diferenta dintre cele doua date este :")
+            
             setChooseD2("Alegeti a doua data");
             setChooseD1("Alegeti prima data");
             setTextAge("Varsta ta este: ");
+
             setTextYear(" ani ");
-            setTextMonth(" luni.");
-            setTextM0Y0("Esti nascut luna aceasta");
+            setTextMonth(" luni ");
+            setTextDay(" zile ");
+            setTextHour(" ore ");
+            setTextMin(" minute ");
+            setTextSec(" secunde. ");
             setTextSetSec("Numar secunde");
             setTextSetMin("Numar minute");
             setTextSetHour("Numar ore");
@@ -135,7 +163,7 @@ const PrincipalComp = () => {
             setTextSetYear("Numar ani");
             setTextBGetSecDate("Obtine a doua data");
            setTextBGetAge("Varsta ta");
-            setTextInstructions("Numerele introduse trebuie sa fie naturale");
+            setTextInstructions("Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0");
 
             setLocale  ('ro');
         }
@@ -257,7 +285,7 @@ const PrincipalComp = () => {
     const getPersAge = () =>
     {
         let today = new Date();
-
+        /*
         if(today.getMonth() - dateFromDP1.getMonth() >= 0)
         {
             setMonthDif(today.getMonth() - dateFromDP1.getMonth());
@@ -273,6 +301,28 @@ const PrincipalComp = () => {
             setYearDif(-1);
             setMonthDif(-1);
         }
+        */
+        bGetAge = 1;
+        let auxDate = new Date();
+        auxDate.setSeconds(1);
+        auxDate.setMinutes(0);
+        auxDate.setHours(0);
+        auxDate.setDate(1);
+        auxDate.setMonth(0);
+        auxDate.setFullYear(0);
+
+        let difInS;
+        difInS = (today.getTime() - dateFromDP1.getTime()) / 1000;
+
+        auxDate.setSeconds(difInS + auxDate.getSeconds());
+
+        setAgeSec (auxDate.getSeconds());
+        setAgeMin (auxDate.getMinutes());
+        setAgeHour (auxDate.getHours());
+        setAgeDay (auxDate.getDate() - 1);
+        setAgeMonth (auxDate.getMonth());
+        setAgeYear (auxDate.getFullYear() );
+
     }
 
     const getSecondDate = () =>
@@ -286,7 +336,9 @@ const PrincipalComp = () => {
         
         
 
-        if(isNaN(sSec) || isNaN(sMin) || isNaN (sMonth) || isNaN(sHour) || isNaN(sDay) || isNaN(sYear))
+        if(isNaN(sSec) || isNaN(sMin) || isNaN (sMonth) || isNaN(sHour) || isNaN(sDay) || isNaN(sYear) 
+        || sSec[0]==='0' || sMin[0]==='0'|| sHour[0]==='0'|| sDay[0]==='0'|| sMonth[0]==='0'|| sYear[0]==='0'
+        || sSec[0]===' ' || sMin[0]===' '|| sHour[0]===' '|| sDay[0]===' '|| sMonth[0]===' '|| sYear[0]===' ' )
         {
            setErrorNotnumberRo("Eroare: Introduceti numere valide");
            setErrorNotnumberEn("Error: Insert valid numbers");
@@ -343,7 +395,52 @@ const PrincipalComp = () => {
                 compareDateVariable='='
    }
     
- 
+   const getDiff = () =>
+   {
+       /*
+        let x = new Date();
+     x.setDate(1);
+     x.setFullYear(0);
+     x.setMonth(0);
+     x.setSeconds(0);
+     x.setMinutes(0);
+     x.setHours(0);
+
+     let s1 = dateFromDP1.getTime() - dateFromDP2.getTime();
+     let ss = s1/1000;
+     x.setSeconds(x.getSeconds() + ss);
+     console.log(x.get)
+       */
+        let auxDate = new Date();
+        auxDate.setSeconds(1);
+        auxDate.setMinutes(0);
+        auxDate.setHours(0);
+        auxDate.setDate(1);
+        auxDate.setMonth(0);
+        auxDate.setFullYear(0);
+
+        let difInS;
+        if(dateFromDP2 > dateFromDP1)
+        {
+            difInS = (dateFromDP2.getTime() - dateFromDP1.getTime()) / 1000;
+        }
+        else
+        {
+            difInS = (dateFromDP1.getTime() - dateFromDP2.getTime()) / 1000;
+        }
+
+        auxDate.setSeconds(difInS + auxDate.getSeconds());
+
+        setDiffSec (auxDate.getSeconds()-1);
+        setDiffMin (auxDate.getMinutes());
+        setDiffHour (auxDate.getHours());
+        setDiffDay (auxDate.getDate() - 1); //scad 1 ca am initialiat cu 1
+        setDiffMonth (auxDate.getMonth());
+        setDiffYear(auxDate.getFullYear());
+        bGetDiffPress = 1;
+    }
+   
+
     return ( 
         <div>
         
@@ -391,13 +488,17 @@ const PrincipalComp = () => {
                         
                             {
                                 (new Date()).getTime() > dateFromDP1.getTime() && 
-                                    <div>
-                                        <Button label={textBGetAge} onClick = { () => {getPersAge()} } />
-                                        {yearDif >0 && monthDif >0 && <p> {textAge} {yearDif} {textYear} {monthDif} {textMonth}</p>}
-                                        {yearDif ===0 && monthDif >0 && <p> {textAge} {monthDif} {textMonth}</p>}
-                                        {yearDif >0 && monthDif ===0 && <p> {textAge} {yearDif} {textYear} </p>}
-                                        {yearDif < 0 && monthDif < 0 && <p> {textM0Y0} </p>}
-                                    </div>
+                                <div>
+                                    <Button label={textBGetAge} onClick = { () => {getPersAge()} } />
+                                   
+                                    {
+                                        (ageYear !== 0 || ageMonth !== 0 || ageDay !== 0 || ageMin !== 0 || ageHour !== 0 || ageSec !== 0 ) && 
+                                            <div>
+                                                <p> {textAge} {ageYear} {textYear} {ageMonth} {textMonth} {ageDay} {textDay} {ageHour} {textHour} {ageMin} {textMin} {ageSec} {textSec}</p>
+                                            </div>
+                                    }
+
+                            </div>
                             }
 
                         
@@ -456,25 +557,21 @@ const PrincipalComp = () => {
                                      </p>
                                     }
                                     
-                                    
 
-                                    {  
-                                        (compareDateVariable === '>' || compareDateVariable === '=') &&
-                                        <div>
-                                           <p> {dayDif} {Math.round((dateFromDP1.getTime() - dateFromDP2.getTime() ) /(1000*60*60*24))} </p>
-                                           <p> {hourDif} {Math.round((dateFromDP1.getTime() - dateFromDP2.getTime() ) /(1000*60*60))}</p> 
-                                        </div>
-                                        
-                                    }
-
+                                    <Button label={bTextGetDiff} onClick={ () => {getDiff()}}/>
+                                   
                                     {
-                                        compareDateVariable === '<' &&
+                                        (diffYear !== 0 || diffMin !==0 || diffDay !==0 || diffHour !== 0 || diffMin !== 0 || diffSec !== 0) &&
                                         <div>
-                                            <p> {dayDif} {-Math.round((dateFromDP1.getTime() - dateFromDP2.getTime() ) /(1000*60*60*24))}</p>
-                                            <p> {hourDif} {-Math.round((dateFromDP1.getTime() - dateFromDP2.getTime() ) /(1000*60*60))}</p> 
+                                            <p> {diffYear} {textYear} {diffMonth} {textMonth} {diffDay} {textDay} {diffHour} {textHour} {diffMin} {textMin} {diffSec} {textSec} </p>
                                         </div>
                                     }
-
+                                    {
+                                       (! (diffYear !== 0 || diffMin !==0 || diffDay !==0 || diffHour !== 0 || diffMin !== 0 || diffSec !== 0)) && bGetDiffPress === 1 &&
+                                        <div>
+                                            <p> {textDateEq} </p>
+                                        </div>
+                                    }
                                 </div>
                         } 
                                
@@ -482,7 +579,8 @@ const PrincipalComp = () => {
                     </div>
             }
 
-       
+            
+            
     </div>
     );
 }
