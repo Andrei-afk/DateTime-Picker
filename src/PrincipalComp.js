@@ -285,23 +285,7 @@ const PrincipalComp = () => {
     const getPersAge = () =>
     {
         let today = new Date();
-        /*
-        if(today.getMonth() - dateFromDP1.getMonth() >= 0)
-        {
-            setMonthDif(today.getMonth() - dateFromDP1.getMonth());
-            setYearDif(today.getFullYear() - dateFromDP1.getFullYear());
-        }
-        else
-        {
-            setMonthDif(11 + (today.getMonth() - dateFromDP1.getMonth() ));
-            setYearDif(today.getFullYear() - dateFromDP1.getFullYear() - 1);            
-        } 
-        if((today.getMonth() === dateFromDP1.getMonth()) && (today.getFullYear() === dateFromDP1.getFullYear()))
-        {
-            setYearDif(-1);
-            setMonthDif(-1);
-        }
-        */
+
         bGetAge = 1;
         let auxDate = new Date();
         auxDate.setSeconds(1);
@@ -397,20 +381,7 @@ const PrincipalComp = () => {
     
    const getDiff = () =>
    {
-       /*
-        let x = new Date();
-     x.setDate(1);
-     x.setFullYear(0);
-     x.setMonth(0);
-     x.setSeconds(0);
-     x.setMinutes(0);
-     x.setHours(0);
-
-     let s1 = dateFromDP1.getTime() - dateFromDP2.getTime();
-     let ss = s1/1000;
-     x.setSeconds(x.getSeconds() + ss);
-     console.log(x.get)
-       */
+    
         let auxDate = new Date();
         auxDate.setSeconds(1);
         auxDate.setMinutes(0);
@@ -434,7 +405,7 @@ const PrincipalComp = () => {
         setDiffSec (auxDate.getSeconds()-1);
         setDiffMin (auxDate.getMinutes());
         setDiffHour (auxDate.getHours());
-        setDiffDay (auxDate.getDate() - 1); //scad 1 ca am initialiat cu 1
+        setDiffDay (auxDate.getDate() - 1); 
         setDiffMonth (auxDate.getMonth());
         setDiffYear(auxDate.getFullYear());
         bGetDiffPress = 1;
