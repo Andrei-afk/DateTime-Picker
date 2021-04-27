@@ -1,6 +1,5 @@
 import React,{useState} from 'react';
 
-import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { addLocale } from 'primereact/api';
@@ -168,6 +167,7 @@ const PrincipalComp = () => {
             setLocale  ('ro');
         }
     }
+   
     const age = () =>
     {
         let todayDate = new Date();
@@ -439,13 +439,27 @@ const PrincipalComp = () => {
         setDiffYear(auxDate.getFullYear());
         bGetDiffPress = 1;
     }
-   
+   var dateUTC;
+    if(timestamp)
+    {
+       // dateUTC = new Date(Date.UTC(timestamp));
+       var date = new Date(); 
+       
+
+        console.log(date.getUTCHours());
+        console.log(date.getHours());
+    }
 
     return ( 
         <div>
         
         <Button label={bTextSL} onClick={ () =>{ changeL() } }/>
-            
+        <div>
+            <div>
+                asd
+            </div>
+            <div>asd</div>
+        </div>
             <div className="p-fluid p-grid p-formgrid">
                 <div className="p-field p-col-12 p-md-4">
                     <label htmlFor="time24">{chooseD1}</label>
@@ -478,7 +492,7 @@ const PrincipalComp = () => {
                 dateFromDP1 && <div>
                             {locale === 'en' && <p> {dateFromDP1.getDate()} {months[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } </p>}
                             {locale === 'ro' && <p> {dateFromDP1.getDate()} {luni[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } </p>}
-
+                            <p>  </p>
                         <br></br>
                         <Button label={bTextCA} onClick={ () =>{ age() } }/> 
                             {majorPerson && locale==='ro' && <p> {persMajora} </p>}
@@ -494,7 +508,17 @@ const PrincipalComp = () => {
                                     {
                                         (ageYear !== 0 || ageMonth !== 0 || ageDay !== 0 || ageMin !== 0 || ageHour !== 0 || ageSec !== 0 ) && 
                                             <div>
-                                                <p> {textAge} {ageYear} {textYear} {ageMonth} {textMonth} {ageDay} {textDay} {ageHour} {textHour} {ageMin} {textMin} {ageSec} {textSec}</p>
+                                                <table>
+                                                    <tr>
+                                                        <td>{textAge}</td>
+                                                        {ageYear !==0 && <td>{ageYear} {textYear} </td>}
+                                                        {ageMonth !==0 && <td>{ageMonth} {textMonth}</td>}
+                                                        {ageDay !==0 && <td>{ageDay} {textDay}</td>}
+                                                        {ageHour !== 0  && <td>{ageHour} {textHour}</td>}
+                                                        {ageMin !== 0 && <td>{ageMin} {textMin}</td>}
+                                                        {ageSec !==0 && <td> {ageSec} {textSec}</td>}
+                                                    </tr>
+                                                </table>
                                             </div>
                                     }
 
