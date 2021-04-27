@@ -76,8 +76,8 @@ const PrincipalComp = () => {
     const [ageMonth, setAgeMonth] = useState(0);
     const [ageYear, setAgeYear] = useState(0);
 
-
-
+    const [dateText, setDateText] = useState("Prima data aleasa: ")
+    const [dateUtcText, setDateUtcText] = useState("Prima data aleasa, transformata in UTC:")
 
     var luni = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
     var months = ['januray', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'octomber', 'november', 'december'];
@@ -113,6 +113,8 @@ const PrincipalComp = () => {
     {
         if (locale === 'ro')
         {
+           setDateText("First date you chose: ");
+           setDateUtcText("First date you chose, transformed in UTC");
            setBTextSL("change to Romanian");
            setTextDateEq("These two dates are qual");
            setBTextCA("Is the person major or minor?")
@@ -140,6 +142,8 @@ const PrincipalComp = () => {
         }
         else
         {
+            setDateText("Prima data aleasa: ");
+            setDateUtcText("Prima data aleasa, transformata in UTC:");
             setTextDateEq("Cele doua date sunt egale");
             setBTextSL("schimb in Engleza");
             setBTextCA("Persoana este minora sau majora?");
@@ -347,15 +351,16 @@ const PrincipalComp = () => {
                 {
                    
                    let auxDate = new Date(dateFromDP1);
-
-                   auxDate= new Date(auxDate.setSeconds(sec + dateFromDP1.getSeconds()));
-                   auxDate= new Date(auxDate.setMinutes(min + dateFromDP1.getMinutes()));
-                   auxDate= new Date(auxDate.setHours(hour + dateFromDP1.getHours()));
-                   auxDate= new Date(auxDate.setDate(day + dateFromDP1.getDate()));
-                   auxDate= new Date(auxDate.setMonth(month + dateFromDP1.getMonth()));
-                   auxDate= new Date(auxDate.setFullYear(year + dateFromDP1.getFullYear()));
+                  
+                    auxDate= new Date(auxDate.setSeconds(sec + dateFromDP1.getSeconds()));
+                    auxDate= new Date(auxDate.setMinutes(min + auxDate.getMinutes()));
+                    auxDate= new Date(auxDate.setHours(hour + auxDate.getHours()));
+                    auxDate= new Date(auxDate.setDate(day + auxDate.getDate()));
+                    auxDate= new Date(auxDate.setMonth(month + auxDate.getMonth()));
+                    auxDate= new Date(auxDate.setFullYear(year + auxDate.getFullYear()));
+                  
                    setDateFromDP2(auxDate);
-                   console.log(auxDate);
+                   
                 }
                 else
                 {  
@@ -447,27 +452,70 @@ const PrincipalComp = () => {
            
             {
                 dateFromDP1 && <div>
-                            {locale === 'en' && <p> {dateFromDP1.getDate()} {months[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } </p>}
-                            {locale === 'ro' && <p> {dateFromDP1.getDate()} {luni[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } </p>}
+                            {
+                                locale === 'en' && <div>
+                                                    <p> 
+                                                        {dateText} {dateFromDP1.getDate()} {months[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear()} {dateFromDP1.getHours()}:{dateFromDP1.getMinutes()}:{dateFromDP1.getSeconds()} 
+                                                    </p>
+                                                    <p>
+                                                        {dateUtcText}: {dateFromDP1.getUTCDate()} {months[dateFromDP1.getUTCMonth()]} {dateFromDP1.getUTCFullYear()} {dateFromDP1.getUTCHours()}:{dateFromDP1.getUTCMinutes()}:{dateFromDP1.getUTCSeconds()} 
+                                                    </p>
+                                                </div>
+                            }
+                            {
+                                locale === 'ro' && <div>
+                                                    <p> 
+                                                        {dateText} {dateFromDP1.getDate()} {luni[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() }  {dateFromDP1.getHours()}:{dateFromDP1.getMinutes()}:{dateFromDP1.getSeconds()}
+                                                    </p>
+                                                    <p>
+                                                    {dateUtcText}: {dateFromDP1.getUTCDate()} {luni[dateFromDP1.getUTCMonth()]} {dateFromDP1.getUTCFullYear()} {dateFromDP1.getUTCHours()}:{dateFromDP1.getUTCMinutes()}:{dateFromDP1.getUTCSeconds()}
+                                                    </p>
+                                                </div>
+                            }
 
                         <br></br>
-                        <Button label={bTextCA} onClick={ () =>{ age() } }/> 
-                            {majorPerson && locale==='ro' && <p> {persMajora} </p>}
-                            {majorPerson && locale==='en' && <p> {majorPerson} </p>}
+                        <table>
+                            <tr>
+                                <td><Button label={bTextCA} onClick={ () =>{ age() } }/> </td>
+                                    {majorPerson && locale==='ro' && <td> {persMajora} </td>}
+                                    {majorPerson && locale==='en' && <td> {majorPerson} </td>}
+                                
+                            </tr>
+                        </table>
+                        
+                            
                             
                         <br></br>
                         
                             {
                                 (new Date()).getTime() > dateFromDP1.getTime() && 
                                 <div>
-                                    <Button label={textBGetAge} onClick = { () => {getPersAge()} } />
+                                <table>
+                                    <tr>
+                                        <td><Button label={textBGetAge} onClick = { () => {getPersAge()} } /></td>
+                                        <td>
+                                             {
+                                                (ageYear !== 0 || ageMonth !== 0 || ageDay !== 0 || ageMin !== 0 || ageHour !== 0 || ageSec !== 0 ) && 
+                                                    <div>
+                                                        <table>
+                                                            <tr>
+                                                                <td>{textAge}</td>
+                                                                {ageYear !==0 && <td>{ageYear} {textYear} </td>}
+                                                                {ageMonth !==0 && <td>{ageMonth} {textMonth}</td>}
+                                                                {ageDay !==0 && <td>{ageDay} {textDay}</td>}
+                                                                {ageHour !== 0  && <td>{ageHour} {textHour}</td>}
+                                                                {ageMin !== 0 && <td>{ageMin} {textMin}</td>}
+                                                                {ageSec !==0 && <td> {ageSec} {textSec}</td>}
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                </table>
+                                    
                                    
-                                    {
-                                        (ageYear !== 0 || ageMonth !== 0 || ageDay !== 0 || ageMin !== 0 || ageHour !== 0 || ageSec !== 0 ) && 
-                                            <div>
-                                                <p> {textAge} {ageYear} {textYear} {ageMonth} {textMonth} {ageDay} {textDay} {ageHour} {textHour} {ageMin} {textMin} {ageSec} {textSec}</p>
-                                            </div>
-                                    }
+                                   
 
                             </div>
                             }
@@ -475,9 +523,14 @@ const PrincipalComp = () => {
                         
 
                         <br></br>
-
-                            <Button label="Timestamp" onClick={ () => { getTimestamp() }}/>
-                            <p> {timestamp}  </p>
+                        <table>
+                            <tr>
+                                <td><Button label="Timestamp" onClick={ () => { getTimestamp() }}/></td>
+                                <td> {timestamp}  </td>
+                            </tr>
+                        </table>
+                            
+                            
 
                         <br></br>
                             {
@@ -513,18 +566,18 @@ const PrincipalComp = () => {
                                 <div>
                                     {
                                         locale==='en' && <p> 
-                                        {dateFromDP1.getDate()} {months[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } 
+                                        {dateFromDP1.getDate()} {months[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } {dateFromDP1.getHours()}:{dateFromDP1.getMinutes()}:{dateFromDP1.getSeconds()}
                                     
                                         {' ' + compareDateVariable + ' '} 
-                                        {dateFromDP2.getDate()} {months[dateFromDP2.getMonth()]} {dateFromDP2.getFullYear()}
+                                        {dateFromDP2.getDate()} {months[dateFromDP2.getMonth()]} {dateFromDP2.getFullYear()} {dateFromDP2.getHours()}:{dateFromDP2.getMinutes()}:{dateFromDP2.getSeconds()}
                                     </p>
                                     }
                                     {
                                          locale==='ro' && <p> 
-                                         {dateFromDP1.getDate()} {luni[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } 
+                                         {dateFromDP1.getDate()} {luni[dateFromDP1.getMonth()]} {dateFromDP1.getFullYear() } {dateFromDP1.getHours()}:{dateFromDP1.getMinutes()}:{dateFromDP1.getSeconds()}
                                      
                                          {' ' + compareDateVariable + ' '} 
-                                         {dateFromDP2.getDate()} {luni[dateFromDP2.getMonth()]} {dateFromDP2.getFullYear()}
+                                         {dateFromDP2.getDate()} {luni[dateFromDP2.getMonth()]} {dateFromDP2.getFullYear()} {dateFromDP2.getHours()}:{dateFromDP2.getMinutes()}:{dateFromDP2.getSeconds()}
                                      </p>
                                     }
                                     
@@ -534,7 +587,17 @@ const PrincipalComp = () => {
                                     {
                                         (diffYear !== 0 || diffMin !==0 || diffDay !==0 || diffHour !== 0 || diffMin !== 0 || diffSec !== 0) &&
                                         <div>
-                                            <p> {diffYear} {textYear} {diffMonth} {textMonth} {diffDay} {textDay} {diffHour} {textHour} {diffMin} {textMin} {diffSec} {textSec} </p>
+                                            <table>
+                                                <tr>
+                                                    {diffYear !==0 && <td>{diffYear} {textYear}</td>}
+                                                    {diffMonth !==0  && <td>{diffMonth} {textMonth} </td>}
+                                                    {diffDay !==0 && <td>{diffDay} {textDay}</td>}
+                                                    {diffHour !==0 && <td>{diffHour} {textHour}</td>}
+                                                    {diffMin !==0 && <td>{diffMin} {textMin}</td>}
+                                                    {diffSec !==0 && <td>{diffSec} {textSec}</td>}
+                                                </tr>
+                                            </table>
+                                            
                                         </div>
                                     }
                                     {
