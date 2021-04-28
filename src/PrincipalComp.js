@@ -38,6 +38,13 @@ const PrincipalComp = () => {
     const [textMin, setTextMin] = useState(' minute ');
     const [textSec, setTextSec] = useState(' secunde.');
 
+    const [textYearSg, setTextYearSg] = useState(' an ');
+    const [textMonthSg, setTextMonthSg] = useState(' luna ');
+    const [textDaySg, setTextDaySg] = useState(' zi ');
+    const [textHourSg, setTextHourSg] = useState(' ora ');
+    const [textMinSg, setTextMinSg] = useState(' minut ');
+    const [textSecSg, setTextSecSg] = useState(' secunda.');
+
     const [textSetSec, setTextSetSec] = useState('Numar secunde');
     const [textSetMin, setTextSetMin] = useState('Numar minute');
     const [textSetHour, setTextSetHour] = useState('Numar ore');
@@ -128,6 +135,12 @@ const PrincipalComp = () => {
            setTextHour(" hours ");
            setTextMin(" minutes ");
            setTextSec(" seconds. ");
+           setTextYearSg(" year ");
+           setTextMonthSg(" month ");
+           setTextDaySg(" day ");
+           setTextHourSg(" hours ");
+           setTextMinSg(" minute ");
+           setTextSecSg(" second. ");
            setTextSetSec("Number of seconds");
            setTextSetMin("Number of minutes");
            setTextSetHour("Number of hours");
@@ -152,7 +165,13 @@ const PrincipalComp = () => {
             setChooseD2("Alegeti a doua data");
             setChooseD1("Alegeti prima data");
             setTextAge("Varsta ta este: ");
-
+            setTextYearSg(" an ");
+            setTextMonthSg(" luna ");
+            setTextDaySg(" zi ");
+            setTextHourSg(" ora ");
+            setTextMinSg(" minut ");
+            setTextSecSg(" secunda. ");
+            
             setTextYear(" ani ");
             setTextMonth(" luni ");
             setTextDay(" zile ");
@@ -500,12 +519,18 @@ const PrincipalComp = () => {
                                                         <table>
                                                             <tr>
                                                                 <td>{textAge}</td>
-                                                                {ageYear !==0 && <td>{ageYear} {textYear} </td>}
-                                                                {ageMonth !==0 && <td>{ageMonth} {textMonth}</td>}
-                                                                {ageDay !==0 && <td>{ageDay} {textDay}</td>}
-                                                                {ageHour !== 0  && <td>{ageHour} {textHour}</td>}
-                                                                {ageMin !== 0 && <td>{ageMin} {textMin}</td>}
-                                                                {ageSec !==0 && <td> {ageSec} {textSec}</td>}
+                                                                {ageYear >1 && <td>{ageYear} {textYear} </td>}
+                                                                {ageYear ===1 && <td>{ageYear} {textYearSg} </td>}
+                                                                {ageMonth >1 && <td>{ageMonth} {textMonth}</td>}
+                                                                {ageMonth ===1 && <td>{ageMonth} {textMonthSg}</td>}
+                                                                {ageDay >1 && <td>{ageDay} {textDay}</td>}
+                                                                {ageDay ===1 && <td>{ageDay} {textDaySg}</td>}
+                                                                {ageHour >1  && <td>{ageHour} {textHour}</td>}
+                                                                {ageHour ===1  && <td>{ageHour} {textHourSg}</td>}
+                                                                {ageMin >1 && <td>{ageMin} {textMin}</td>}
+                                                                {ageMin ===1 && <td>{ageMin} {textMinSg}</td>}
+                                                                {ageSec >1 && <td> {ageSec} {textSec}</td>}
+                                                                {ageSec ===1 && <td> {ageSec} {textSecSg}</td>}
                                                             </tr>
                                                         </table>
                                                     </div>
@@ -589,12 +614,18 @@ const PrincipalComp = () => {
                                         <div>
                                             <table>
                                                 <tr>
-                                                    {diffYear !==0 && <td>{diffYear} {textYear}</td>}
-                                                    {diffMonth !==0  && <td>{diffMonth} {textMonth} </td>}
-                                                    {diffDay !==0 && <td>{diffDay} {textDay}</td>}
-                                                    {diffHour !==0 && <td>{diffHour} {textHour}</td>}
-                                                    {diffMin !==0 && <td>{diffMin} {textMin}</td>}
-                                                    {diffSec !==0 && <td>{diffSec} {textSec}</td>}
+                                                    {diffYear >1 && <td>{diffYear} {textYear}</td>}
+                                                    {diffYear ===1 && <td>{diffYear} {textYearSg}</td>}
+                                                    {diffMonth >1  && <td>{diffMonth} {textMonth} </td>}
+                                                    {diffMonth ===1  && <td>{diffMonth} {textMonthSg} </td>}
+                                                    {diffDay >1 && <td>{diffDay} {textDay}</td>}
+                                                    {diffDay ===1 && <td>{diffDay} {textDaySg}</td>}
+                                                    {diffHour >1 && <td>{diffHour} {textHour}</td>}
+                                                    {diffHour ===1 && <td>{diffHour} {textHourSg}</td>}
+                                                    {diffMin >1 && <td>{diffMin} {textMin}</td>}
+                                                    {diffMin ===1 && <td>{diffMin} {textMinSg}</td>}
+                                                    {diffSec >1 && <td>{diffSec} {textSec}</td>}
+                                                    {diffSec ===1 && <td>{diffSec} {textSecSg}</td>}
                                                 </tr>
                                             </table>
                                             
