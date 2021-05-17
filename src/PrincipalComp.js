@@ -12,7 +12,6 @@ import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { getDefaultNormalizer } from '@testing-library/dom';
 
 
 const PrincipalComp = () => {
@@ -51,7 +50,7 @@ const PrincipalComp = () => {
     const [textSetDay, setTextSetDay] = useState('Numar zile');
     const [textSetMonth, setTextSetMonth] = useState('Numar luni');
     const [textSetYear, setTextSetYear] = useState('Numar ani');
-    const [textInstructions, setTextInstructions] = useState('Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0');
+    const [textInstructions, setTextInstructions] = useState('Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0. Valoarea maxima care poate fi introdusa este 100.');
     const [textBGetAge, setTextBGetAge] = useState('Varsta ta');
     const [textBGetSecDate, setTextBGetSecDate] = useState ('Obtine a doua data');
     const [errorNotNumberRo, setErrorNotnumberRo] = useState(null);
@@ -60,6 +59,9 @@ const PrincipalComp = () => {
     const [errorNotNumberEn, setErrorNotnumberEn] = useState(null);
     const [errorNotPositiveEn, setErrorNotPositiveEn] = useState(null);
     const [errorNotNaturalEnn, setErrorNotNaturalEn]=useState(null);
+    const [errorBigNumberRo, setErrorBigNumberRo] = useState(null);
+    const [errorBigNumberEn, setErrorBigNumberEn] = useState(null);
+    
     const [textDateEq, setTextDateEq] = useState('Cele doua date sunt egale');
 
     const [sSec, setSSec] = useState(0);
@@ -86,10 +88,11 @@ const PrincipalComp = () => {
     const [dateText, setDateText] = useState("Prima data aleasa: ")
     const [dateUtcText, setDateUtcText] = useState("Prima data aleasa, transformata in UTC:")
 
+    const [bGetDiffPress, setBGetDiffPress] = useState(0);
+
     var luni = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
     var months = ['januray', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'octomber', 'november', 'december'];
     var compareDateVariable ;
-    var bGetDiffPress = 0;
     var bGetAge = 0;
 
     addLocale('ro', {
@@ -147,7 +150,7 @@ const PrincipalComp = () => {
            setTextSetDay("Number of days");
            setTextSetMonth("Number of months");
            setTextSetYear("Number of years");
-           setTextInstructions("The numbers entered must be natural. If u don`t insert any values, the used values are 0.");
+           setTextInstructions("The numbers entered must be natural. If you don`t insert any values, the used values are 0. The maximum accepted value is 100.");
            setTextBGetSecDate("Get second date");
            setTextBGetAge("Get age");
            setLocale ('en');
@@ -186,7 +189,7 @@ const PrincipalComp = () => {
             setTextSetYear("Numar ani");
             setTextBGetSecDate("Obtine a doua data");
            setTextBGetAge("Varsta ta");
-            setTextInstructions("Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0");
+            setTextInstructions("Numerele introduse trebuie sa fie naturale. In cazul in care nu sunt introduse valori, se va utiliza valoarea 0. Valoarea maxima care poate fi introdusa este 100.");
 
             setLocale  ('ro');
         }
@@ -302,7 +305,8 @@ const PrincipalComp = () => {
 
     const getTimestamp = () =>
     {
-        setTimestamp((dateFromDP1.getTime()).toLocaleString())
+        //setTimestamp((dateFromDP1.getTime()).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        setTimestamp(new Intl.NumberFormat().format(dateFromDP1.getTime()));
     }
 
     const getPersAge = () =>
@@ -340,9 +344,9 @@ const PrincipalComp = () => {
         setErrorNotPositiveRo(null);
         setErrorNotnumberEn(null);
         setErrorNotnumberRo(null);
+        setErrorBigNumberRo(null);
+        setErrorBigNumberEn(null);
         
-        
-
         if(isNaN(sSec) || isNaN(sMin) || isNaN (sMonth) || isNaN(sHour) || isNaN(sDay) || isNaN(sYear) 
         || sSec[0]==='0' || sMin[0]==='0'|| sHour[0]==='0'|| sDay[0]==='0'|| sMonth[0]==='0'|| sYear[0]==='0'
         || sSec[0]===' ' || sMin[0]===' '|| sHour[0]===' '|| sDay[0]===' '|| sMonth[0]===' '|| sYear[0]===' ' )
@@ -365,21 +369,32 @@ const PrincipalComp = () => {
                 let day = Number(sDay);
                 let month = Number(sMonth);
                 let year = Number(sYear);
-    
+                
                 if(Number.isInteger(sec) && Number.isInteger(min) && Number.isInteger(hour) && Number.isInteger(day) && Number.isInteger(month) && Number.isInteger(year))
                 {
                    
-                   let auxDate = new Date(dateFromDP1);
-                  
-                    auxDate= new Date(auxDate.setSeconds(sec + dateFromDP1.getSeconds()));
-                    auxDate= new Date(auxDate.setMinutes(min + auxDate.getMinutes()));
-                    auxDate= new Date(auxDate.setHours(hour + auxDate.getHours()));
-                    auxDate= new Date(auxDate.setDate(day + auxDate.getDate()));
-                    auxDate= new Date(auxDate.setMonth(month + auxDate.getMonth()));
-                    auxDate= new Date(auxDate.setFullYear(year + auxDate.getFullYear()));
-                  
-                   setDateFromDP2(auxDate);
+                    if(sec > 100 || min > 100 || hour > 100 || day > 100 || month > 100 || year > 100)
+                    {
+                        setErrorBigNumberRo("Eroare: Ai introdus numere mai mari decat 100");
+                        setErrorNotNaturalEn("Error: You inserted bigger numbers then 100")
+                    }
+                    else
+                    {
+                        let auxDate = new Date(dateFromDP1);
+                    
+                        auxDate= new Date(auxDate.setSeconds(sec + dateFromDP1.getSeconds()));
+                        auxDate= new Date(auxDate.setMinutes(min + auxDate.getMinutes()));
+                        auxDate= new Date(auxDate.setHours(hour + auxDate.getHours()));
+                        auxDate= new Date(auxDate.setDate(day + auxDate.getDate()));
+                        auxDate= new Date(auxDate.setMonth(month + auxDate.getMonth()));
+                        auxDate= new Date(auxDate.setFullYear(year + auxDate.getFullYear()));
+                    
+                    setDateFromDP2(auxDate);
+                    
+
                    
+                    }
+
                 }
                 else
                 {  
@@ -432,7 +447,11 @@ const PrincipalComp = () => {
         setDiffDay (auxDate.getDate() - 1); 
         setDiffMonth (auxDate.getMonth());
         setDiffYear(auxDate.getFullYear());
-        bGetDiffPress = 1;
+
+          
+        setBGetDiffPress (1);
+   
+       
     }
    
 
@@ -564,6 +583,7 @@ const PrincipalComp = () => {
                                         { errorNotNaturalEnn && <p> {errorNotNaturalEnn}</p> }
                                         { errorNotNumberEn && <p> {errorNotNumberEn} </p> }
                                         { errorNotPositiveEn && <p> {errorNotPositiveEn} </p>}
+                                        {errorBigNumberEn && <p> {errorBigNumberEn}</p>} 
                                     </div>
                             }
                             {
@@ -572,6 +592,7 @@ const PrincipalComp = () => {
                                         { errorNotNaturalRo && <p> {errorNotNaturalRo}</p> }
                                         { errorNotNumberRo && <p> {errorNotNumberRo} </p> }
                                         { errorNotPositiveRo && <p> {errorNotPositiveRo} </p>} 
+                                        {errorBigNumberRo && <p> {errorBigNumberRo}</p>}
                                     </div>
                             }
                             <InputText onChange={event => setSSec(event.target.value)} placeholder={textSetSec}/>
@@ -626,6 +647,7 @@ const PrincipalComp = () => {
                                                     {diffMin ===1 && <td>{diffMin} {textMinSg}</td>}
                                                     {diffSec >1 && <td>{diffSec} {textSec}</td>}
                                                     {diffSec ===1 && <td>{diffSec} {textSecSg}</td>}
+                                                   
                                                 </tr>
                                             </table>
                                             
